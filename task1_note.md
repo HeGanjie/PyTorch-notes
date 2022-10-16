@@ -1,5 +1,7 @@
 # Task1-PyTorch基础知识（第二章）
 
+[教程原文](https://datawhalechina.github.io/thorough-pytorch/%E7%AC%AC%E4%BA%8C%E7%AB%A0/index.html)
+
 #### 关键要点
 
 * 张量

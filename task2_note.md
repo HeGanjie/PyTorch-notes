@@ -1,5 +1,7 @@
 # Task2-Pytorch的各个组件和实战（第三、四章）
 
+[教程原文](https://datawhalechina.github.io/thorough-pytorch/%E7%AC%AC%E4%B8%89%E7%AB%A0/index.html)
+
 #### 关键要点
 
 * 机器学习开发流程  

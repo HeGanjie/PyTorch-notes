@@ -36,3 +36,43 @@
   * 改变输入通道数（传入单通道的，但是模型需要三通道图）：可通过添加in_chans=1来改变
   * 模型的保存：timm库所创建的模型是torch.model的子类，所以可直接用torch库中内置的模型参数保存和加载的方法
 * 半精度训练
+  * 半精度能够减少显存占用，使得显卡可以同时加载更多数据进行计算
+  * 半精度训练的设置
+    1. `import autocast`
+    2. 模型设置，forward 的定义加上 `@autocast()` 装饰器
+    3. 训练过程:在将数据输入模型及其之后的部分放入`with autocast():`
+  * 注意：半精度训练主要适用于数据本身的size比较大（比如说3D图像、视频等）。当数据本身的size并不大时（比如手写数字MNIST数据集的图片尺寸只有28*28），使用半精度训练则可能不会带来显著的提升
+* 数据增强-imgaug
+  * 这类技术，可提高训练数据集的大小和质量，以便我们可以使用它们来构建更好的深度学习模型
+  * 在计算视觉领域，生成增强图像相对容易。即使引入噪声或裁剪图像的一部分，模型仍可以对图像进行分类
+  * imgaug简介和安装
+    * imgaug是计算机视觉任务中常用的一个数据增强的包，相比于torchvision.transforms，它提供了更多的数据增强方法
+    * imgaug的安装: [官网](https://github.com/aleju/imgaug)
+    * imgaug的使用:
+      * imgaug仅仅提供了图像增强的一些方法，但是并未提供图像的IO操作
+      * 建议使用imageio进行读入，如果使用的是opencv进行文件读取的时候，需要进行手动改变通道，将读取的BGR图像转换为RGB图像
+      * 当我们用PIL.Image进行读取时，因为读取的图片没有shape的属性，所以我们需要将读取到的img转换为np.array()的形式再进行处理
+      * 常用方法，先引入 `from imgaug import augmenters as iaa`
+        1. 创建旋转处理函数 `rotate = iaa.Affine(rotate=(-4,45))`
+        2. 单图多个函数依次处理：`iaa.Sequential([...])`
+        3. 一次处理多张图片：`rotate(images=images)`
+        4. 随机选择处理方式：`iaa.Sometimes(p,then_list,else_list)`
+      * 对不同大小的图片进行处理：不同大小的需要分批处理
+    * imgaug在PyTorch的应用：主要用于自定义数据集的 `__getitem__`，[更多说明](https://github.com/aleju/imgaug/issues/406)
+    * num_workers>0 时需要注意worker_init_fn()函数的作用
+    * 作者还推荐另一个数据增强库:Albumentations
+* 使用argparse进行调参
+  * argparse可以解析我们输入的命令行参数
+  * argparse简介
+    * 是python内置的命令行解析的标准模块
+    * 使用后，在命令行输入的参数就可以以这种形式 `python file.py --lr 1e-4 --batch_size 32`
+  * argparse的使用，可以归纳为三个步骤
+    * 创建ArgumentParser()对象
+    * 调用add_argument()方法添加参数
+    * 使用parse_args()解析参数
+  * 必填参数：给参数设置required =True后，我们就必须传入该参数  
+  * 更加高效使用argparse修改超参数：为了使代码更加简洁和模块化，一般会将有关超参数的操作写在config.py，然后在其他文件导入
+
+
+#### 教程小建议
+1. 6.5 数据增强，对批次图片进行处理那一小节，有错别字：“将image改为image”应该是“将image改为images”吧

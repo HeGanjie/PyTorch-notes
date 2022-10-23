@@ -11,3 +11,5 @@
 [Task04-PyTorch进阶训练技巧（第六章）](https://github.com/HeGanjie/PyTorch-notes/blob/main/task4_note.md)
 
 [Task05-PyTorch可视化（第七章）](https://github.com/HeGanjie/PyTorch-notes/blob/main/task5_note.md)
+
+[Task06-PyTorch生态简介+模型部署（第八、九章）](https://github.com/HeGanjie/PyTorch-notes/blob/main/task6_note.md)
